@@ -13,6 +13,12 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    if @user.save
+      flash[:notice] = "Welcome to the Alpha Blog, you have successfully signup"
+      redirect_to article_path
+    else
+      render 'new'
+    end
   end
 
   # GET /users/1/edit
@@ -33,6 +39,8 @@ class UsersController < ApplicationController
       end
     end
   end
+
+
 
   # PATCH/PUT /users/1 or /users/1.json
   def update
@@ -65,6 +73,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:username)
+      params.require(:user).permit(:username, :user_email, :password)
     end
 end

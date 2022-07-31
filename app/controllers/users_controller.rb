@@ -31,32 +31,29 @@ class UsersController < ApplicationController
   # POST /users or /users.json
   def create
     @user = User.new(user_params)
-
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to user_url(@user), notice: "User was successfully created." }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    if @user.save
+      flash[:notice] = "Welcome to the Alpha Blog #{@user.username}, you have successfully signed up"
+      redirect_to articles_path
+    else
+      render 'new'
     end
   end
+  private
+  def user_params
+    params.require(:user).permit(:username, :user_email, :password)
+  end
+end
 
 
 
   # PATCH/PUT /users/1 or /users/1.json
   def update
     @user = User.find(params[:id])
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to user_url(@user), notice: "User was successfully updated." }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-        redirect_to article_path
-      end
+    if @user.update(user_params)
+      flash[:notice] = "Your account information was successfully updated"
+      redirect_to @user
+    else
+      render 'edit'
     end
   end
 
@@ -80,4 +77,3 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:username, :user_email, :password)
     end
-end
